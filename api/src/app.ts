@@ -5,9 +5,12 @@ import helmet from "helmet";
 import { corsOptions } from "./core/config/cors.config.js";
 import { env } from "./core/config/env.config.js";
 import { helmetConfig } from "./core/config/helmet.config.js";
-import { globalLimiter } from "./core/config/rate-limit.config.js";
+import { authenticationLimiter, globalLimiter } from "./core/config/rate-limit.config.js";
+import authenticationRoute from "./features/authentication/routes/authentication.route.js";
 
 const app = express();
+
+const version = "v1";
 
 /*
  * Hide the identity of the server technology from potential attackers
@@ -23,5 +26,7 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json({ limit: "10kb" }));
 app.use(globalLimiter);
+
+app.use(`/api/${version}/auth`, authenticationLimiter, authenticationRoute);
 
 export default app;

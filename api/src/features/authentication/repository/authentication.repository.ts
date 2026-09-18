@@ -1,4 +1,3 @@
-import type { UUID } from "node:crypto";
 import { eq } from "drizzle-orm";
 import { db } from "../../../core/database/db.js";
 import {
@@ -15,7 +14,7 @@ export async function createUser(data: InsertUserRow): Promise<UserRow> {
   return result[0];
 }
 
-export async function findUserByPublicId(publicId: UUID): Promise<UserRow | null> {
+export async function findUserByPublicId(publicId: string): Promise<UserRow | null> {
   const result = await db.select().from(users).where(eq(users.publicId, publicId)).limit(1);
   return result[0] ?? null;
 }

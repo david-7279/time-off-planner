@@ -1,4 +1,5 @@
 import { AppError } from "../../../core/errors/app.error.js";
+import { NotFoundError } from "../../../core/errors/not-found.error.js";
 import { UnauthorizedError } from "../../../core/errors/unauthorized.error.js";
 import { logger } from "../../../core/logger/logger.js";
 import { generateAccessToken } from "../../../core/security/jwt.js";
@@ -6,7 +7,12 @@ import { comparePassword, hashPassword } from "../../../core/security/password.j
 import type { LoginRequestDto } from "../dto/request/login.request.js";
 import type { RegisterRequestDto } from "../dto/request/register.request.js";
 import { type LoginResult, toLoginResponse } from "../dto/response/login.response.js";
-import { createUser, findUserByEmail } from "../repository/authentication.repository.js";
+import { toUserResponse, type UserResponseDto } from "../dto/response/user.response.js";
+import {
+  createUser,
+  findUserByEmail,
+  findUserByPublicId,
+} from "../repository/authentication.repository.js";
 import { type AuthRequestMetadata, DEFAULT_USER_ROLE } from "../types/authentication.types.js";
 import { createUserSession } from "./authentication-session.service.js";
 
@@ -91,4 +97,19 @@ export async function login(
     ),
     refreshToken,
   };
+}
+
+export async function me(publicId: string): Promise<UserResponseDto> {
+  const user = await findUserByPublicId(publicId);
+
+  if (!user) {
+    throw new NotFoundError("User not found");
+  }
+
+  return toUserResponse({
+    publicId: user.publicId,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+  });
 }
