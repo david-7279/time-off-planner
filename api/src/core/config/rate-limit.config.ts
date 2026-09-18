@@ -24,7 +24,7 @@ export const actuatorLimiter = rateLimit({
   message: rateLimitMessage,
 });
 
-export const authLimiter = rateLimit({
+export const authenticationLimiter = rateLimit({
   windowMs: env.rateLimit.authWindowMs,
   max: env.rateLimit.authMax,
   standardHeaders: true,

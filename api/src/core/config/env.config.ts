@@ -109,6 +109,7 @@ export const env = {
     accessExpiresIn: getOptionalEnv("JWT_ACCESS_EXPIRES_IN", "15m"),
     accessExpiresInSeconds: parseExpiresIn(getOptionalEnv("JWT_ACCESS_EXPIRES_IN", "15m")),
     refreshExpiresInDays: getNumberEnv("JWT_REFRESH_EXPIRES_IN_DAYS", 7),
+    refreshExpiresInMs: getNumberEnv("JWT_REFRESH_EXPIRES_IN_DAYS", 7) * 24 * 60 * 60 * 1000,
     issuer: "time-off-api",
     audience: "time-off-api",
   },
