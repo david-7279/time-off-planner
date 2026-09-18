@@ -1,10 +1,9 @@
-import type { UUID } from "node:crypto";
 import type { UserRole } from "../../types/authentication.types.js";
 import { type TokenResponseDto, toTokenResponse } from "./token.response.js";
 import { toUserResponse, type UserResponseDto } from "./user.response.js";
 
 export type AuthUserDto = {
-  publicId: UUID;
+  publicId: string;
   name: string;
   email: string;
   role: UserRole;
