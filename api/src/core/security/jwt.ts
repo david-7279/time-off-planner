@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { Algorithm, JwtPayload, SignOptions } from "jsonwebtoken";
 import jwt from "jsonwebtoken";
+import { USER_ROLES } from "../../features/authentication/types/authentication.types.js";
 import { env } from "../config/env.config.js";
 import type { AccessTokenPayload, TokenUser } from "./types/jwt.types.js";
 
@@ -27,8 +28,9 @@ function isAccessTokenPayload(decoded: string | JwtPayload): decoded is AccessTo
   return (
     typeof decoded !== "string" &&
     typeof decoded.sub === "string" &&
-    typeof decoded.role === "string"
-    // (USER_ROLES as readonly string[]).includes(decoded.role)
+    typeof decoded.role === "string" &&
+    typeof decoded.jti === "string" &&
+    (USER_ROLES as readonly string[]).includes(decoded.role)
   );
 }
 

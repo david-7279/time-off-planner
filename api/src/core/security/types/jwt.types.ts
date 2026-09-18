@@ -1,4 +1,3 @@
-import type { UUID } from "node:crypto";
 import type { JwtPayload } from "jsonwebtoken";
 import type { UserRole } from "../../../features/authentication/types/authentication.types.js";
 
@@ -8,6 +7,6 @@ export type AccessTokenPayload = JwtPayload & {
 };
 
 export type TokenUser = {
-  publicId: UUID;
+  publicId: string;
   role: UserRole;
 };
