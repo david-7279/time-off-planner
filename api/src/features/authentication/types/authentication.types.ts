@@ -10,3 +10,8 @@ export type AuthenticatedUser = {
   publicId: UUID;
   role: UserRole;
 };
+
+export type AuthRequestMetadata = {
+  ipAddress?: string;
+  userAgent?: string;
+};
