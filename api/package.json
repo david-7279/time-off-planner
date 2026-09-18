@@ -20,7 +20,8 @@
   "type": "module",
   "dependencies": {
     "@types/express": "^5.0.6",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "helmet": "^8.3.0"
   },
   "devDependencies": {
     "@types/node": "^26.6.1",
