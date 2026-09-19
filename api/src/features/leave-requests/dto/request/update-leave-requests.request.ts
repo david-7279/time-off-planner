@@ -1,9 +1,9 @@
-export type ReviewLeaveRequestRequest = {
+export type UpdateReviewLeaveRequest = {
   status: "approved" | "rejected";
   note?: string;
 };
 
-export function toReviewLeaveRequestInput(body: unknown): ReviewLeaveRequestRequest | null {
+export function toReviewLeaveRequestInput(body: unknown): UpdateReviewLeaveRequest | null {
   if (typeof body !== "object" || body === null) return null;
 
   const b = body as Record<string, unknown>;

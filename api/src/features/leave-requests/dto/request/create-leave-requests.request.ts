@@ -1,4 +1,4 @@
-export type CreateLeaveRequestRequest = {
+export type CreateLeaveRequest = {
   leaveTypeId: number;
   startsAt: string;
   endsAt: string;
@@ -10,7 +10,7 @@ export type CreateLeaveRequestRequest = {
  * sends (status, reviewerId, workingDays, ...) is discarded HERE —
  * the service computes those itself.
  */
-export function toCreateLeaveRequestInput(body: unknown): CreateLeaveRequestRequest | null {
+export function toCreateLeaveRequestInput(body: unknown): CreateLeaveRequest | null {
   if (typeof body !== "object" || body === null) return null;
 
   const b = body as Record<string, unknown>;

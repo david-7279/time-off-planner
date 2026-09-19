@@ -17,7 +17,7 @@ export type LeaveRequestResponse = {
   createdAt: string;
 };
 
-type LeaveRequestDetail = LeaveRequestWithType & LeaveRequestWithReviewer;
+export type LeaveRequestDetail = LeaveRequestWithType & LeaveRequestWithReviewer;
 
 export function toLeaveRequestResponse(row: LeaveRequestDetail): LeaveRequestResponse {
   return {
