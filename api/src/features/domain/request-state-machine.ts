@@ -1,4 +1,4 @@
-import type {LeaveRequestStatus} from "../leave-requests/types/leave-request.types.js";
+import type { LeaveRequestStatus } from "../leave-requests/types/leave-request.types.js";
 
 /**
  * Returns true if a leave request can transition from one status to another.
@@ -7,9 +7,9 @@ import type {LeaveRequestStatus} from "../leave-requests/types/leave-request.typ
  * @returns True if the transition is allowed, false otherwise.
  */
 const ALLOWED_TRANSITIONS: Record<LeaveRequestStatus, readonly LeaveRequestStatus[]> = {
-    pending: ["approved", "rejected"],
-    approved: [],
-    rejected: [],
+  pending: ["approved", "rejected"],
+  approved: [],
+  rejected: [],
 };
 
 /**
@@ -19,5 +19,5 @@ const ALLOWED_TRANSITIONS: Record<LeaveRequestStatus, readonly LeaveRequestStatu
  * @returns True if the transition is allowed, false otherwise.
  */
 export function canTransition(from: LeaveRequestStatus, to: LeaveRequestStatus): boolean {
-    return ALLOWED_TRANSITIONS[from].includes(to);
+  return ALLOWED_TRANSITIONS[from].includes(to);
 }
