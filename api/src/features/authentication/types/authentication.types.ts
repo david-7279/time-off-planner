@@ -1,13 +1,10 @@
-import type { UUID } from "node:crypto";
+export const USER_ROLES = ["member", "manager"] as const;
+export type UserRole = (typeof USER_ROLES)[number];
 
-export type UserRole = "user" | "admin";
-
-export const USER_ROLES: readonly UserRole[] = ["user", "admin"] as const;
-
-export const DEFAULT_USER_ROLE: UserRole = "user";
+export const DEFAULT_USER_ROLE: UserRole = "member";
 
 export type AuthenticatedUser = {
-  publicId: UUID;
+  publicId: string;
   role: UserRole;
 };
 

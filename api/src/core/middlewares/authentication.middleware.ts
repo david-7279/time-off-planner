@@ -15,7 +15,7 @@ export function authenticate(req: Request, _res: Response, next: NextFunction) {
 
   try {
     const payload = verifyAccessToken(token);
-    req.user = { id: payload.sub, role: payload.role };
+    req.user = { publicId: payload.sub, role: payload.role };
     next();
   } catch (err) {
     if (err instanceof jwt.TokenExpiredError) {
