@@ -1,5 +1,6 @@
 import {
   boolean,
+  integer,
   pgEnum,
   pgTable,
   serial,
@@ -8,8 +9,9 @@ import {
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
+import { teams } from "./teams.schema.js";
 
-export const userRoleEnum = pgEnum("user_role", ["user", "admin"]);
+export const userRoleEnum = pgEnum("user_role", ["member", "manager"]);
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -20,6 +22,8 @@ export const users = pgTable("users", {
   passwordHash: text("password_hash").notNull(),
   role: userRoleEnum("role").notNull(),
   isActive: boolean("is_active").notNull().default(true),
+
+  teamId: integer("team_id").references(() => teams.id, { onDelete: "set null" }),
 
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
