@@ -22,6 +22,7 @@ import {
 import {
   countLeaveRequests,
   type FindLeaveRequestsOptions,
+  findLeaveRequestDetailByPublicId,
   findLeaveRequests,
   findLeaveRequestWithTeam,
 } from "../repository/query/query-leave-request.repository.js";
@@ -30,6 +31,7 @@ import {
   type ListMyRequestsQuery,
   type PaginatedRequests,
 } from "../types/leave-request.types.js";
+import {logger} from "../../../core/logger/logger.js";
 
 /** The result of creating a new leave request. */
 export type CreateRequestResult = {
@@ -156,6 +158,7 @@ export async function reviewRequest(
  * Lists the leave requests for the current user.
  * @param user The current user.
  * @param query The query parameters.
+ * @returns A list of leave requests for the current user.
  */
 export async function listMyRequests(
   user: AuthenticatedUser,
@@ -191,4 +194,26 @@ export async function listMyRequests(
       hasPrevious: page > 1,
     },
   };
+}
+
+/**
+ * Lists a single leave request for the current user.
+ * @param requestPublicId The public ID of the leave request to retrieve.
+ * @param user The current user.
+ * @returns A single leave request of current user.
+ */
+export async function getMyRequest(
+  requestPublicId: string,
+  user: AuthenticatedUser
+): Promise<LeaveRequestResponse> {
+  const found = await findLeaveRequestDetailByPublicId(requestPublicId);
+  if (!found) {
+    throw new NotFoundError("Leave request");
+  }
+
+  if (found.userId !== user.id) {
+    throw new NotFoundError("Leave request");
+  }
+
+  return toLeaveRequestResponse(found);
 }

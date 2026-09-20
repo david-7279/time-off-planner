@@ -6,6 +6,7 @@ import { authorize } from "../../../core/middlewares/authorization.middleware.js
 import { validationMiddleware } from "../../../core/middlewares/validation.middleware.js";
 import {
   createLeaveRequest,
+  getMyLeaveRequest,
   listMyLeaveRequests,
   reviewLeaveRequest,
 } from "../controller/leave-request.controller.js";
@@ -54,5 +55,11 @@ leaveRequestsRoute.get(
   validationMiddleware,
   listMyLeaveRequests
 );
+
+/**
+ * GET /id - A single leave request for the authenticated user.
+ * Any authenticated user may list their own leave requests.
+ */
+leaveRequestsRoute.get("/:id", authenticateMiddleware, getMyLeaveRequest);
 
 export default leaveRequestsRoute;

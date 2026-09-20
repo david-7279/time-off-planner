@@ -116,6 +116,25 @@ export async function findLeaveRequestByPublicId(
   return rows[0] ?? null;
 }
 
+/**
+ * Find the details of a leave request by its public ID.
+ * @param publicId THe public ID of the leave request to find.
+ * @param client The database client to use
+ */
+export async function findLeaveRequestDetailByPublicId(
+  publicId: string,
+  client: DbClient = db
+): Promise<LeaveRequestDetail | null> {
+  const rows = await client
+    .select(leaveRequestWithJoins)
+    .from(leaveRequests)
+    .innerJoin(leaveTypes, eq(leaveTypes.id, leaveRequests.leaveTypeId))
+    .leftJoin(reviewer, eq(reviewer.id, leaveRequests.reviewerId))
+    .where(eq(leaveRequests.publicId, publicId))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
 export async function findLeaveRequestWithTeam(
   publicId: string,
   client: DbClient = db

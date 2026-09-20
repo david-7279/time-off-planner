@@ -120,3 +120,29 @@ export const listMyLeaveRequests = async (req: Request, res: Response, next: Nex
     next(error);
   }
 };
+
+/**
+ * Lists a single leave request for the authenticated user.
+ * @param req The request object.
+ * @param res The response object.
+ * @param next The next function.
+ * @returns A single leave request for the authenticated user.
+ */
+export const getMyLeaveRequest = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = getAuthUser(req);
+
+    const raw = req.params.id;
+    const requestPublicId = Array.isArray(raw) ? raw[0] : raw;
+
+    const request = await leaveRequestService.getMyRequest(requestPublicId, user);
+
+    return res.status(200).json({
+      success: true,
+      message: "Leave request retrieved successfully",
+      data: { request },
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
