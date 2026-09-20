@@ -1,4 +1,6 @@
-import { body } from "express-validator";
+// src/features/leave-requests/validator/leave-request.validator.ts
+
+import { body, query } from "express-validator";
 import { LEAVE_REQUEST_STATUSES } from "../types/leave-request.types.js";
 
 export const createLeaveRequestValidator = [
@@ -43,4 +45,16 @@ export const reviewLeaveRequestValidator = [
     .withMessage("Status must be 'approved' or 'rejected'"),
 
   body("note").isLength({ max: 400 }).withMessage("Note must be at most 400 characters"),
+];
+
+export const listRequestsValidator = [
+  query("page").optional().isInt({ min: 1 }).withMessage("page must be a positive integer").toInt(),
+  query("pageSize")
+    .optional()
+    .isInt({ min: 1, max: 50 })
+    .withMessage("pageSize must be 1–50")
+    .toInt(),
+  query("status").optional().isIn(["pending", "approved", "rejected"]),
+  query("sortBy").optional().isIn(["startsAt", "createdAt", "status"]),
+  query("sortDirection").optional().isIn(["asc", "desc"]),
 ];
