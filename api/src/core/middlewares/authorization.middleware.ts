@@ -11,7 +11,7 @@ import { logger } from "../logger/logger.js";
  * @param roles - the roles allowed to proceed
  * @returns a middleware function
  */
-export function authorizeRole(...roles: UserRole[]) {
+export function authorize(...roles: UserRole[]) {
   return (req: Request, _res: Response, next: NextFunction) => {
     if (!req.user) {
       next(new UnauthorizedError("Authentication required"));
