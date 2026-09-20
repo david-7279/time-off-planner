@@ -2,20 +2,57 @@
 
 import { Router } from "express";
 import { authenticateMiddleware } from "../../../core/middlewares/authentication.middleware.js";
-import { authorizeRole } from "../../../core/middlewares/authorization.middleware.js";
+import { authorize } from "../../../core/middlewares/authorization.middleware.js";
 import { validationMiddleware } from "../../../core/middlewares/validation.middleware.js";
-import { createLeaveRequest } from "../controller/leave-request.controller.js";
-import { createLeaveRequestValidator } from "../validator/leave-request.validator.js";
+import {
+  createLeaveRequest,
+  listMyLeaveRequests,
+  reviewLeaveRequest,
+} from "../controller/leave-request.controller.js";
+import {
+  createLeaveRequestValidator,
+  listRequestsValidator,
+  reviewLeaveRequestValidator,
+} from "../validator/leave-request.validator.js";
 
 const leaveRequestsRoute = Router();
 
+/**
+ * POST - Create a leave request.
+ * Any authenticated user may create a leave request.
+ */
 leaveRequestsRoute.post(
   "/",
   authenticateMiddleware,
-  authorizeRole("member", "manager"),
+  authorize("member", "manager"),
   createLeaveRequestValidator,
   validationMiddleware,
   createLeaveRequest
+);
+
+/**
+ * PATCH /:id - Review a leave request.
+ * Only manager can review the leave request.
+ */
+leaveRequestsRoute.patch(
+  "/:id",
+  authenticateMiddleware,
+  authorize("manager"),
+  reviewLeaveRequestValidator,
+  validationMiddleware,
+  reviewLeaveRequest
+);
+
+/**
+ * GET /me - List the leave requests for the authenticated user.
+ * Any authenticated user may list their own leave requests.
+ */
+leaveRequestsRoute.get(
+  "/me",
+  authenticateMiddleware,
+  listRequestsValidator,
+  validationMiddleware,
+  listMyLeaveRequests
 );
 
 export default leaveRequestsRoute;

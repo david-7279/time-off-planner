@@ -2,28 +2,44 @@
 
 import { db } from "../../../core/database/db.js";
 import { AppError } from "../../../core/errors/app.error.js";
+import { NotFoundError } from "../../../core/errors/not-found.error.js";
+import type { AuthenticatedUser } from "../../authentication/types/authentication.types.js";
 import { canTransition } from "../../domain/request-state-machine.js";
 import { countWorkingDays } from "../../domain/working-days.js";
 import { findBalance } from "../../leave-balance/repository/leave-balance.repository.js";
 import { findLeaveTypeById } from "../../leave-types/repository/leave-types.repository.js";
 import type { CreateLeaveRequest } from "../dto/request/create-leave-requests.request.js";
-import type { UpdateReviewLeaveRequest } from "../dto/request/update-leave-requests.request.js";
+import type { ReviewLeaveRequest } from "../dto/request/review-leave-requests.request.js";
 import {
-  type LeaveRequestDetail,
   type LeaveRequestResponse,
   toLeaveRequestResponse,
 } from "../dto/response/leave-request.response.js";
 import {
   approveRequestWithDeduction,
-  findLeaveRequestWithTeam,
   insertLeaveRequest,
   rejectRequest,
-} from "../repository/leave-request.repository.js";
+} from "../repository/command/command-leave-request.repository.js";
+import {
+  countLeaveRequests,
+  type FindLeaveRequestsOptions,
+  findLeaveRequests,
+  findLeaveRequestWithTeam,
+} from "../repository/query/query-leave-request.repository.js";
+import {
+  DEFAULT_LEAVE_REQUEST_STATUS,
+  type ListMyRequestsQuery,
+  type PaginatedRequests,
+} from "../types/leave-request.types.js";
 
 /** The result of creating a new leave request. */
 export type CreateRequestResult = {
   request: LeaveRequestResponse;
   balanceProjection: { remainingBefore: number; remainingAfter: number };
+};
+
+/** The result of reviewing a leave request. */
+export type ReviewRequestResult = {
+  request: LeaveRequestResponse;
 };
 
 /**
@@ -65,7 +81,7 @@ export async function createRequest(
     startsAt: input.startsAt,
     endsAt: input.endsAt,
     workingDays,
-    status: "pending",
+    status: DEFAULT_LEAVE_REQUEST_STATUS,
   });
 
   return {
@@ -88,9 +104,9 @@ export async function createRequest(
  */
 export async function reviewRequest(
   requestPublicId: string,
-  input: UpdateReviewLeaveRequest,
+  input: ReviewLeaveRequest,
   reviewer: { id: number; publicId: string; role: string; teamId: number | null }
-): Promise<LeaveRequestResponse> {
+): Promise<ReviewRequestResult> {
   const found = await findLeaveRequestWithTeam(requestPublicId);
   if (!found) {
     throw new AppError("Leave request not found", 404);
@@ -111,6 +127,11 @@ export async function reviewRequest(
     throw new AppError(`Request is already ${request.status}`, 409);
   }
 
+  const leaveType = await findLeaveTypeById(request.leaveTypeId);
+  if (!leaveType) {
+    throw new NotFoundError("Leave type");
+  }
+
   const result = await db.transaction(async (tx) =>
     input.status === "approved"
       ? approveRequestWithDeduction(requestPublicId, reviewer.id, input.note, tx)
@@ -121,8 +142,53 @@ export async function reviewRequest(
     throw new AppError("Request has already been reviewed", 409);
   }
 
-  return toLeaveRequestResponse({
-    ...result.request,
-    reviewerPublicId: reviewer.publicId,
-  } as LeaveRequestDetail);
+  return {
+    request: toLeaveRequestResponse({
+      ...result.request,
+      leaveTypeName: leaveType.name,
+      leaveTypePublicId: leaveType.publicId,
+      reviewerPublicId: reviewer.publicId,
+    }),
+  };
+}
+
+/**
+ * Lists the leave requests for the current user.
+ * @param user The current user.
+ * @param query The query parameters.
+ */
+export async function listMyRequests(
+  user: AuthenticatedUser,
+  query: ListMyRequestsQuery
+): Promise<PaginatedRequests> {
+  const pageSize = Math.min(Math.max(query.pageSize, 1), 50);
+  const page = Math.max(query.page, 1);
+
+  const options: FindLeaveRequestsOptions = {
+    userId: user.id,
+    limit: pageSize,
+    offset: (page - 1) * pageSize,
+    sortBy: query.sortBy,
+    sortDirection: query.sortDirection,
+    statuses: query.status ? [query.status] : undefined,
+  };
+
+  const [rows, totalItems] = await Promise.all([
+    findLeaveRequests(options),
+    countLeaveRequests(options),
+  ]);
+
+  const totalPages = Math.ceil(totalItems / pageSize);
+
+  return {
+    items: rows.map(toLeaveRequestResponse),
+    pagination: {
+      page,
+      pageSize,
+      totalItems,
+      totalPages,
+      hasNext: page < totalPages,
+      hasPrevious: page > 1,
+    },
+  };
 }
