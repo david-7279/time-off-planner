@@ -1,8 +1,7 @@
-import type {
-  LeaveRequestStatus,
-  LeaveRequestWithReviewer,
-  LeaveRequestWithType,
-} from "../../types/leave-request.types.js";
+// src/features/leave-requests/dto/response/leave-request.response.ts
+
+import type { LeaveRequestRow } from "../../../../core/database/schema/index.js";
+import type { LeaveRequestStatus } from "../../types/leave-request.types.js";
 
 export type LeaveRequestResponse = {
   publicId: string;
@@ -17,7 +16,11 @@ export type LeaveRequestResponse = {
   createdAt: string;
 };
 
-export type LeaveRequestDetail = LeaveRequestWithType & LeaveRequestWithReviewer;
+export type LeaveRequestDetail = LeaveRequestRow & {
+  leaveTypeName: string;
+  leaveTypePublicId: string;
+  reviewerPublicId: string | null;
+};
 
 export function toLeaveRequestResponse(row: LeaveRequestDetail): LeaveRequestResponse {
   return {
