@@ -1,3 +1,5 @@
+// src/core/config/env.config.ts
+
 import "dotenv/config";
 
 type NodeEnv = "development" | "test" | "production";
@@ -31,7 +33,9 @@ function getNumberEnv(name: string, fallback: number): number {
 
   const parsedValue = Number(value);
 
-  if (Number.isNaN(parsedValue)) {
+  // Strict: reject hex ("0x10"), exponents ("1e3"), and any numeric-looking
+  // strings that aren't valid decimal numbers.
+  if (!Number.isFinite(parsedValue) || !/^-?\d+(\.\d+)?$/.test(value)) {
     throw new Error(`Environment variable ${name} must be a valid number`);
   }
 
@@ -73,6 +77,8 @@ function parseExpiresIn(value: string): number {
 }
 
 const nodeEnv = getNodeEnv();
+const accessExpiresIn = getOptionalEnv("JWT_ACCESS_EXPIRES_IN", "15m");
+const refreshExpiresInDays = getNumberEnv("JWT_REFRESH_EXPIRES_IN_DAYS", 7);
 
 export const env = {
   nodeEnv,
@@ -89,8 +95,6 @@ export const env = {
   rateLimit: {
     windowMs: getNumberEnv("RATE_LIMIT_WINDOW_MS", 15 * 60 * 1000),
     max: getNumberEnv("RATE_LIMIT_MAX", 100),
-    actuatorWindowMs: getNumberEnv("RATE_LIMIT_ACTUATOR_WINDOW_MS", 60 * 1000),
-    actuatorMax: getNumberEnv("RATE_LIMIT_ACTUATOR_MAX", 60),
     authWindowMs: getNumberEnv("RATE_LIMIT_AUTH_WINDOW_MS", 15 * 60 * 1000),
     authMax: getNumberEnv("RATE_LIMIT_AUTH_MAX", 10),
   },
@@ -106,10 +110,10 @@ export const env = {
 
   jwt: {
     accessSecret: getRequiredEnv("JWT_ACCESS_SECRET"),
-    accessExpiresIn: getOptionalEnv("JWT_ACCESS_EXPIRES_IN", "15m"),
-    accessExpiresInSeconds: parseExpiresIn(getOptionalEnv("JWT_ACCESS_EXPIRES_IN", "15m")),
-    refreshExpiresInDays: getNumberEnv("JWT_REFRESH_EXPIRES_IN_DAYS", 7),
-    refreshExpiresInMs: getNumberEnv("JWT_REFRESH_EXPIRES_IN_DAYS", 7) * 24 * 60 * 60 * 1000,
+    accessExpiresIn,
+    accessExpiresInSeconds: parseExpiresIn(accessExpiresIn),
+    refreshExpiresInDays,
+    refreshExpiresInMs: refreshExpiresInDays * 24 * 60 * 60 * 1000,
     issuer: "time-off-api",
     audience: "time-off-api",
   },

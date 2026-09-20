@@ -1,3 +1,5 @@
+// src/core/config/rate-limit.config.ts
+
 import rateLimit from "express-rate-limit";
 import { env } from "./env.config.js";
 
@@ -16,21 +18,10 @@ export const globalLimiter = rateLimit({
   message: rateLimitMessage,
 });
 
-export const actuatorLimiter = rateLimit({
-  windowMs: env.rateLimit.actuatorWindowMs,
-  max: env.rateLimit.actuatorMax,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: rateLimitMessage,
-});
-
 export const authenticationLimiter = rateLimit({
   windowMs: env.rateLimit.authWindowMs,
   max: env.rateLimit.authMax,
   standardHeaders: true,
   legacyHeaders: false,
-  message: {
-    success: false,
-    error: { message: "Too many requests, please try again later" },
-  },
+  message: rateLimitMessage,
 });
