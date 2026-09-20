@@ -1,27 +1,39 @@
-import type { NextFunction, Request, Response } from "express";
-import { type ValidationError, validationResult } from "express-validator";
+// src/core/middlewares/validation.middleware.ts
 
-export function validate(req: Request, res: Response, next: NextFunction) {
+import type { NextFunction, Request, Response } from "express";
+import { validationResult } from "express-validator";
+
+/**
+ * Validates the user input
+ * @param req The request object
+ * @param res The response object
+ * @param next The next middleware function
+ */
+export function validationMiddleware(req: Request, res: Response, next: NextFunction) {
   const errors = validationResult(req);
 
   if (errors.isEmpty()) {
-    return next();
+    next();
+    return;
   }
 
-  const formattedErrors: Record<string, string[]> = {};
+  const fields: Record<string, string[]> = {};
 
-  errors.array().forEach((error: ValidationError) => {
-    const key = "path" in error ? error.path : "unknown";
+  for (const error of errors.array({ onlyFirstError: true })) {
+    if (error.type !== "field") continue;
 
-    if (!formattedErrors[key]) {
-      formattedErrors[key] = [];
+    const key = error.path;
+    if (!fields[key]) {
+      fields[key] = [];
     }
+    fields[key].push(error.msg);
+  }
 
-    formattedErrors[key].push(error.msg);
-  });
-
-  return res.status(400).json({
+  res.status(400).json({
     success: false,
-    errors: formattedErrors,
+    error: {
+      message: "Validation failed",
+      fields,
+    },
   });
 }
