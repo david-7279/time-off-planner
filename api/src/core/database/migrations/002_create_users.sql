@@ -1,3 +1,5 @@
+-- src/core/database/migrations/002_create_users.sql
+
 CREATE TYPE user_role AS ENUM (
     'member',
     'manager'
@@ -21,7 +23,3 @@ CREATE TRIGGER users_set_updated_at
     BEFORE UPDATE ON users
     FOR EACH ROW
     EXECUTE FUNCTION set_updated_at();
-
-CREATE INDEX idx_users_public_id ON users (public_id);
-CREATE INDEX idx_users_email     ON users (email);
-CREATE INDEX idx_users_role      ON users (role);

@@ -1,3 +1,5 @@
+// src/core/database/schema/users.schema.ts
+
 import {
   boolean,
   integer,
