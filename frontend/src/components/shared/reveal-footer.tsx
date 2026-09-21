@@ -25,14 +25,6 @@ export function RevealFooter() {
                                 How it works
                             </a>
                         </li>
-                        <li>
-                            <Link
-                                to={paths.public.privacy}
-                                className="hover:underline hover:underline-offset-2"
-                            >
-                                Privacy
-                            </Link>
-                        </li>
                     </ul>
                     <ul className="flex flex-col gap-2 text-sm md:text-base">
                         <li>
