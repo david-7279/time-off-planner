@@ -60,7 +60,7 @@ export const FormInput = <TFieldValues extends FieldValues = FieldValues>({
                 autoComplete={autoComplete}
                 aria-invalid={isInvalid}
                 aria-describedby={isInvalid ? errorId : undefined}
-                className={cn('border-input rounded-md', className)}
+                className={cn('border-input', className)}
             />
 
             {isInvalid && <FieldError id={errorId}>{error}</FieldError>}

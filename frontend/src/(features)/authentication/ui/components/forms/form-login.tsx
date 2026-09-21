@@ -1,5 +1,6 @@
 // src/(features)/authentication/ui/components/form/form-login.tsx
 
+import { ArrowRightIcon } from 'lucide-react'
 import { Controller } from 'react-hook-form'
 import { useFormLogin } from '@/src/(features)/authentication/hooks/use-form-login.ts'
 import { Button } from '@/src/components/ui/button'
@@ -59,15 +60,14 @@ export function FormLogin() {
                     )}
                 />
 
-                <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    aria-busy={isSubmitting}
-                    className="rounded-md"
-                >
+                <Button type="submit" disabled={isSubmitting} aria-busy={isSubmitting} size="lg">
                     {isSubmitting && <Spinner className="size-4" />}
-                    <Text variant="small" className="text-primary-foreground">
+                    <Text
+                        variant="small"
+                        className="inline-flex gap-2 items-center text-primary-foreground"
+                    >
                         Sign In
+                        <ArrowRightIcon />
                     </Text>
                 </Button>
             </FieldGroup>
