@@ -26,7 +26,7 @@ export function LegalAside({
     return (
         <nav
             aria-label="Policy sections"
-            className={cn('flex flex-col ring-1 ring-foreground/5', className)}
+            className={cn('flex flex-col ring-1 bg-card ring-foreground/5', className)}
         >
             {/* Header row: title left, count right — the [ 06 NODES ] pattern */}
             <div className="flex items-center justify-between border-b border-foreground/5 px-4 py-3">
