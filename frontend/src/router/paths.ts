@@ -1,9 +1,9 @@
 // src/router/paths.ts
 
 export const paths = {
-    // root
+    // time off
     timeOff: {
-        root: '/',
+        dashboard: '/dashboard',
     },
 
     // authentication
@@ -11,6 +11,7 @@ export const paths = {
 
     // public
     public: {
+        root: '/',
         privacy: '/privacy',
         terms: '/terms',
     },

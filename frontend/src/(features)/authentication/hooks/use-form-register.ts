@@ -40,7 +40,7 @@ export function useFormRegister() {
                     }
                 } | null
             )?.from?.pathname
-            navigate(from ?? paths.timeOff.root, { replace: true })
+            navigate(from ?? paths.timeOff.dashboard, { replace: true })
         } catch (error) {
             if (isApiError(error)) {
                 if (error.isValidationError && error.fields) {

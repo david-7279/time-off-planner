@@ -14,7 +14,7 @@ export function GuestRouter() {
     }
 
     if (isAuthenticated) {
-        return <Navigate to={paths.timeOff.root} replace />
+        return <Navigate to={paths.timeOff.dashboard} replace />
     }
 
     return <Outlet />

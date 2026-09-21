@@ -1,6 +1,7 @@
 // src/router/app-router.tsx
 
 import { Route, Routes } from 'react-router'
+import LandingPage from '@/src/(default)/landing/ui/page.tsx'
 import { AppLayout } from '@/src/(default)/layout.tsx'
 import PrivacyPage from '@/src/(default)/legal/ui/privacy/page.tsx'
 import TermsPage from '@/src/(default)/legal/ui/terms/page.tsx'
@@ -24,6 +25,7 @@ export default function AppRouter() {
         <Routes>
             <Route element={<AppLayout />}>
                 {/* Public legal documents */}
+                <Route path={paths.public.root} element={<LandingPage />} />
                 <Route path={paths.public.terms} element={<TermsPage />} />
                 <Route path={paths.public.privacy} element={<PrivacyPage />} />
 
