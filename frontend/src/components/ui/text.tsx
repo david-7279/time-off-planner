@@ -7,13 +7,14 @@ const textVariants = cva('text-foreground', {
     variants: {
         variant: {
             default: 'text-base',
-            h1: 'scroll-m-20 text-4xl font-extrabold tracking-tight text-balance',
-            h2: 'scroll-m-20 border-b border-border pb-2 text-3xl font-semibold tracking-tight first:mt-0',
-            h3: 'scroll-m-20 text-2xl font-semibold tracking-tight',
-            h4: 'scroll-m-20 text-xl font-semibold tracking-tight',
-            h5: 'scroll-m-20 text-lg tracking-tight',
+            h1: 'font-display scroll-m-20 text-6xl font-medium tracking-tight text-balance md:text-7xl',
+            h2: 'font-display scroll-m-20 text-4xl font-medium tracking-tight text-balance',
+            h3: 'font-display scroll-m-20 text-3xl font-medium tracking-tight',
+            h4: 'font-display scroll-m-20 text-2xl font-medium tracking-tight',
+            h5: 'font-display scroll-m-20 text-xl tracking-tight',
             p: 'leading-7 [&:not(:first-child)]:mt-4',
-            blockquote: 'mt-4 border-l-2 border-border pl-4 italic text-muted-foreground',
+            blockquote:
+                'font-display mt-4 border-l-2 border-border pl-4 italic text-muted-foreground',
             code: 'relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold',
             lead: 'text-xl text-muted-foreground',
             large: 'text-lg font-semibold',
@@ -22,9 +23,7 @@ const textVariants = cva('text-foreground', {
             xs: 'text-xs text-muted-foreground',
         },
     },
-    defaultVariants: {
-        variant: 'default',
-    },
+    defaultVariants: { variant: 'default' },
 })
 
 type TextVariant = NonNullable<VariantProps<typeof textVariants>['variant']>
