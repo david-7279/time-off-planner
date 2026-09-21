@@ -1,6 +1,7 @@
 // src/components/layout/reveal-footer.tsx
 
 import { Link } from 'react-router'
+import { HERO } from '@/src/(default)/landing/content/landing.content.ts'
 import { Text } from '@/src/components/ui/text.tsx'
 import { paths } from '@/src/router/paths.ts'
 
@@ -17,6 +18,24 @@ export function RevealFooter() {
                 <nav aria-label="Footer" className="flex justify-end gap-12 md:gap-24">
                     <ul className="flex flex-col gap-2 text-sm md:text-base">
                         <li>
+                            <a
+                                href={HERO.secondaryCta.href}
+                                className=" text-foreground hover:underline hover:underline-offset-2"
+                            >
+                                How it works
+                            </a>
+                        </li>
+                        <li>
+                            <Link
+                                to={paths.public.privacy}
+                                className="hover:underline hover:underline-offset-2"
+                            >
+                                Privacy
+                            </Link>
+                        </li>
+                    </ul>
+                    <ul className="flex flex-col gap-2 text-sm md:text-base">
+                        <li>
                             <Link
                                 to={paths.public.terms}
                                 className="hover:underline hover:underline-offset-2"
@@ -30,14 +49,6 @@ export function RevealFooter() {
                                 className="hover:underline hover:underline-offset-2"
                             >
                                 Privacy
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                to={paths.auth}
-                                className="hover:underline hover:underline-offset-2"
-                            >
-                                Area
                             </Link>
                         </li>
                     </ul>
