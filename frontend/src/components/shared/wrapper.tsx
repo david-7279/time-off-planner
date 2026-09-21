@@ -10,9 +10,5 @@ interface WrapperProps {
 
 /** Centered content container — width constraint + horizontal padding. */
 export default function Wrapper({ className, children }: WrapperProps) {
-    return (
-        <div className={cn('flex flex-col mx-auto w-full max-w-4xl px-4', className)}>
-            {children}
-        </div>
-    )
+    return <div className={cn('flex flex-col mx-auto w-full px-4', className)}>{children}</div>
 }
