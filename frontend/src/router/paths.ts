@@ -7,10 +7,7 @@ export const paths = {
     },
 
     // authentication
-    auth: {
-        login: '/auth/login',
-        register: '/auth/register',
-    },
+    auth: '/auth',
 
     // public
     public: {

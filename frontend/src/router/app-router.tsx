@@ -1,11 +1,10 @@
 // src/router/app-router.tsx
 
-import { Navigate, Route, Routes } from 'react-router'
+import { Route, Routes } from 'react-router'
 import PrivacyPage from '@/src/(default)/legal/ui/privacy/page.tsx'
 import TermsPage from '@/src/(default)/legal/ui/terms/page.tsx'
 import AuthLayout from '@/src/(features)/authentication/ui/layout.tsx'
-import LoginPage from '@/src/(features)/authentication/ui/login/page.tsx'
-import RegisterPage from '@/src/(features)/authentication/ui/register/page.tsx'
+import AuthenticationPage from '@/src/(features)/authentication/ui/page.tsx'
 import NotFoundPage from '@/src/not-found.tsx'
 import { GuestRouter } from '@/src/router/guest-router.tsx'
 import { paths } from '@/src/router/paths.ts'
@@ -26,10 +25,8 @@ export default function AppRouter() {
 
             {/* Guest-only */}
             <Route element={<GuestRouter />}>
-                <Route path="/auth" element={<AuthLayout />}>
-                    <Route index element={<Navigate to={paths.auth.login} replace />} />
-                    <Route path={paths.auth.login} element={<LoginPage />} />
-                    <Route path={paths.auth.register} element={<RegisterPage />} />
+                <Route path={paths.auth} element={<AuthLayout />}>
+                    <Route path={paths.auth} element={<AuthenticationPage />} />
                 </Route>
             </Route>
 

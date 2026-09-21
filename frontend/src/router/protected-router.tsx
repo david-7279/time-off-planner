@@ -15,7 +15,7 @@ export function ProtectedRouter() {
     }
 
     if (!isAuthenticated) {
-        return <Navigate to={paths.auth.login} replace state={{ from: location }} />
+        return <Navigate to={paths.auth} replace state={{ from: location }} />
     }
 
     return <Outlet />
