@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "db:up": "docker compose -f infrastructure/docker-compose.yaml up -d",
+    "db:down": "docker compose -f infrastructure/docker-compose.yaml down",
+    "db:reset": "cd infrastructure && pnpm run db:down -- -v && pnpm run db:up && pnpm -C api run migrate && pnpm -C api run seed"
+  }
+}
