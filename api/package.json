@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsx watch src/server.ts",
+    "docker-start": "pnpm run migrate && pnpm run dev",
     "migrate": "tsx src/core/database/migrate.ts",
     "seed": "tsx src/core/database/seed.ts",
     "test": "vitest run",

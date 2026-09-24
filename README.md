@@ -149,8 +149,8 @@ focus.
 
 ### Allowed Transitions (the whole state machine)
 
-pending --[manager approves]--> approved   (balance deducted, atomically)
-pending --[manager rejects]---> rejected   (no side effects)
+pending --[manager approves]--> approved (balance deducted, atomically)
+pending --[manager rejects]---> rejected (no side effects)
 approved / rejected --> terminal, no further transitions
 
 Anything else returns `409`. Encoding this table in middleware — a
@@ -222,50 +222,78 @@ collection that serves as living API documentation while you build.
 
 ### Prerequisites
 
-- Node.js 20+
-- Docker (for PostgreSQL)
+- Node.js 22+
+- pnpm 10+ — enabled via core pack (bundled with Node):
+- Docker with compose (for PostgreSQL)
+- psql (optional — for manual DB inspection; docker compose exec works too)
 
-### Setup
-
-```bash
-# 1. Clone and install
-git clone <repo-url> && cd timeoff-planner
-npm install
-
-# 2. Start PostgreSQL
-docker compose up -d
-
-# 3. Configure environment
-cp .env.example .env
-```
-
-### Environment Variables
+## Project layout
 
 ```text
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/timeoff
-JWT_SECRET=change-me
-JWT_EXPIRES_IN=7d
-PORT=3000
-VITE_API_URL=http://localhost:3000/api
+├── api/                # Express + TypeScript backend
+├── frontend/           # React + Vite client
+└── infrastructure/     # docker-compose for PostgreSQL
 ```
 
-### Run
+## Setup
+
+## 1. Clone and install (both packages)
 
 ```bash
-# Backend (with auto-reload)
-npm run dev:server
-
-# Frontend (Vite dev server)
-npm run dev:client
-
-# Tests
-npm test
-
-# Lint + format
-npm run check
+git clone https://github.com/david-7279/time-off-planner
+cd time-off-planner
 ```
 
-### Seed Data
+```bash
+cd api && pnpm install
+```
 
-A seed script creates two teams, a manager and two members per team, and a handful of pre-approved requests so the
-calendar isn't empty on first load. Register real users through the UI afterward.
+```bash
+cd frontend && pnpm install
+```
+
+## 2. Configure environments — two files, different consumers:
+
+```bash
+cp .env.example .env.shared # DB credentials (read by docker compose AND referenced by api/.env)
+```
+
+```bash
+cp api/.env.example api/.env # API secrets: DATABASE_URL, JWT secrets, CORS, pool
+````
+
+```bash
+cp frontend/.env.example frontend/.env # VITE_API_BASE_URL=http://localhost:3000
+```
+
+### ⚠ api/.env: generate real JWT secrets:
+
+```bash
+openssl rand -base64 48 # JWT_ACCESS_SECRET
+```
+
+```bash
+openssl rand -base64 48 # JWT_REFRESH_SECRET
+```
+
+### ⚠ api/.env note: the DB runs on host port 5433 (5432 is reserved for a system postgres on this machine).
+
+The included DATABASE_URL already points at 5433.
+
+## 3. Start PostgreSQL (in a container, data persisted in a named volume)
+
+```bash
+docker compose --env-file .env.shared -f infrastructure/docker-compose.yaml up -d
+```
+
+```bash
+docker compose --env-file .env.shared -f infrastructure/docker-compose.yaml ps # wait for "healthy"
+```
+
+## 4. Create schema + reference data (from api/)
+
+```bash
+cd api
+pnpm run migrate  # runs all .sql migrations → "All migrations complete"
+pnpm run seed     # leave types, teams, users, balances, one approved request
+````
