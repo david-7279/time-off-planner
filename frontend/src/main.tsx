@@ -12,8 +12,8 @@ import {
 import { Toaster } from '@/src/components/ui/toast.tsx'
 import { setTokenProvider } from '@/src/lib/api/api-client.ts'
 import { queryClient } from '@/src/lib/query/query-client.ts'
-import AppRouter from '@/src/router/app-router.tsx'
 import './global.css'
+import AppRouter from '@/src/router/app-router.tsx'
 
 setTokenProvider({
     get: getStoredAuthToken,

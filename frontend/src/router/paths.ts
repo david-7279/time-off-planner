@@ -1,21 +1,17 @@
-// src/router/paths.ts
-
 export const paths = {
-    // time off
     timeOff: {
-        dashboard: '/dashboard',
+        root: '/planner',
+        dashboard: '/planner/dashboard',
+        requests: '/planner/requests',
+        teamCalendar: '/planner/team-calendar',
+        balances: '/planner/balances',
+        approvals: '/planner/approvals',
     },
-
-    // authentication
     auth: '/auth',
-
-    // public
     public: {
         root: '/',
         privacy: '/privacy',
         terms: '/terms',
     },
-
-    // other
-    notFound: '/notFound',
+    notFound: '/not-found',
 } as const

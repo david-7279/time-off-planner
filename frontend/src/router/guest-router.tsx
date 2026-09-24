@@ -5,7 +5,12 @@ import { useAuthentication } from '@/src/(features)/authentication/hooks/use-aut
 import { AuthGateLoading } from '@/src/components/layout/auth-gate-loading.tsx'
 import { paths } from '@/src/router/paths.ts'
 
-/** Route gate for unauthenticated-only pages (login, register) */
+/**
+ * Route gate for unauthenticated-only pages (the auth page).
+ * - Session resolving (restoring/loading) → wait — never redirect mid-check
+ * - Already authenticated → the app root
+ * - Otherwise → render the guest route tree
+ */
 export function GuestRouter() {
     const { status, isAuthenticated } = useAuthentication()
 
@@ -14,7 +19,7 @@ export function GuestRouter() {
     }
 
     if (isAuthenticated) {
-        return <Navigate to={paths.timeOff.dashboard} replace />
+        return <Navigate to={paths.timeOff.root} replace />
     }
 
     return <Outlet />

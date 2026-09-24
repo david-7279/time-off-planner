@@ -5,7 +5,14 @@ import { useAuthentication } from '@/src/(features)/authentication/hooks/use-aut
 import { AuthGateLoading } from '@/src/components/layout/auth-gate-loading.tsx'
 import { paths } from '@/src/router/paths.ts'
 
-/** Route gate for authenticated-only pages (balances, requests, calendar) */
+/**
+ * Route gate for authenticated-only pages (planner: dashboard, requests,
+ * calendar, balances, approvals).
+ * - Session resolving (restoring/loading) → wait — never redirect mid-check
+ * - Unauthenticated → login, remembering the destination (the auth flow
+ *   reads location.state.from after success)
+ * - Otherwise → render the protected route tree
+ */
 export function ProtectedRouter() {
     const { status, isAuthenticated } = useAuthentication()
     const location = useLocation()
