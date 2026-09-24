@@ -31,7 +31,6 @@ import {
   type ListMyRequestsQuery,
   type PaginatedRequests,
 } from "../types/leave-request.types.js";
-import {logger} from "../../../core/logger/logger.js";
 
 /** The result of creating a new leave request. */
 export type CreateRequestResult = {
